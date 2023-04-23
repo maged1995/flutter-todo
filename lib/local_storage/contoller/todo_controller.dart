@@ -20,15 +20,16 @@ class TodoController extends ChangeNotifier {
     todoBox.toMap().forEach((key, value) {
       _todos.add({'id': key, 'todo': value});
     });
-    print(_todos);
     notifyListeners();
   }
 
   void add(Todo todo) {
     if (_todos.any((e) => e['todo'].title == todo.title)) {
     } else {
-      _todos.add({'id': todoBox.add(todo), 'todo': todo});
-      notifyListeners();
+      todoBox.add(todo).then((id) {
+        _todos.add({'id': id, 'todo': todo});
+        notifyListeners();
+      });
     }
   }
 
@@ -43,6 +44,4 @@ class TodoController extends ChangeNotifier {
     _todos[index]['todo'] = todo;
     notifyListeners();
   }
-
-  // List<Todo> get list = box;
 }
