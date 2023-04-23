@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/Todo/todo.dart';
-import 'package:todo/todoModel.dart';
-// import 'package:layout/layout.dart';
-// import '../Todo/todoList.dart';
+import 'package:todo/local_storage/models/todo.dart';
+import 'package:todo/local_storage/contoller/todo_controller.dart';
 
 class CreateUpdatePage extends StatefulWidget {
   const CreateUpdatePage({Key? key, required this.title}) : super(key: key);
@@ -31,13 +29,13 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
 
   void _addTodo() {
     currentTodo = Todo(title: titleController.text, text: textController.text);
-    Provider.of<TodoModel>(context, listen: false).add(currentTodo!);
+    Provider.of<TodoController>(context, listen: false).add(currentTodo!);
     FocusScope.of(context).unfocus();
   }
 
   void _updateTodo() {
     currentTodo!.update(titleController.text, textController.text);
-    Provider.of<TodoModel>(context, listen: false).update(currentTodo!);
+    Provider.of<TodoController>(context, listen: false).update(currentTodo!);
     FocusScope.of(context).unfocus();
   }
 
@@ -52,10 +50,6 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
       titleController.text = currentTodo!.title;
       textController.text = currentTodo!.text;
     }
-
-    print(data);
-
-    print(Theme.of(context).appBarTheme.iconTheme?.color);
 
     return Scaffold(
       appBar: AppBar(title: Text(currentTodo != null ? "Update" : "Create")),
@@ -104,7 +98,7 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
           // ),
         ]),
       ),
-      floatingActionButton: Consumer<TodoModel>(
+      floatingActionButton: Consumer<TodoController>(
           builder: (context, todo, child) => ElevatedButton(
               onPressed: currentTodo != null ? _updateTodo : _addTodo,
               style: ButtonStyle(

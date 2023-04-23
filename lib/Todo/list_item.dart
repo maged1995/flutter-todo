@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'todo.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/local_storage/contoller/todo_controller.dart';
+import 'package:todo/local_storage/models/todo.dart';
 
 class ListItem extends StatefulWidget {
   final Todo todo;
@@ -11,6 +13,11 @@ class ListItem extends StatefulWidget {
 }
 
 class _ListItemState extends State<ListItem> {
+  void setListItemCheck(value) {
+    widget.todo.setIsChecked(value);
+    Provider.of<TodoController>(context, listen: false).update(widget.todo);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -40,7 +47,7 @@ class _ListItemState extends State<ListItem> {
                   value: widget.todo.isChecked,
                   onChanged: (bool? value) {
                     setState(() {
-                      widget.todo.setIsChecked(value);
+                      setListItemCheck(value);
                     });
                   },
                 ),

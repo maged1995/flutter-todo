@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/todoModel.dart';
+import 'package:todo/local_storage/contoller/todo_controller.dart';
+import 'package:todo/local_storage/models/todo.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'listItem.dart';
-import 'todo.dart';
+import 'list_item.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -30,11 +30,11 @@ class _TodoListState extends State<TodoList> {
     //     itemBuilder: (context, index) {
     //       return ListItem(todo: todoList[index]);
     //     });
-    return Consumer<TodoModel>(builder: (context, todo, child) {
+    return Consumer<TodoController>(builder: (context, todo, child) {
       return ListView.builder(
-          itemCount: todo.items.length,
+          itemCount: todo.list.length,
           itemBuilder: (context, index) {
-            Todo currentItem = todo.items[index];
+            Todo currentItem = todo.list[index]['todo'];
             return Slidable(
                 endActionPane: ActionPane(
                   motion: ScrollMotion(),

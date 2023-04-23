@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/todoModel.dart';
-import '../Todo/todoList.dart';
+import 'package:todo/local_storage/contoller/todo_controller.dart';
+import '../Todo/todo_list.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TodoModel>(builder: (context, todo, child) {
+    return Consumer<TodoController>(builder: (context, todo, child) {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Flutter Demo Home Page"),
