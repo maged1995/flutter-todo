@@ -27,6 +27,32 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
   Todo? currentTodo;
   Map<dynamic, dynamic> data = {};
 
+  @override
+  void initState() {
+    Provider.of<TodoController>(context, listen: false)
+        .setSavable(false, false);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    textController.dispose();
+    super.dispose();
+  }
+
+  void shouldSave(str) {
+    if (titleController.text.isNotEmpty &&
+        textController.text.isNotEmpty &&
+        (titleController.text != currentTodo?.title ||
+            textController.text != currentTodo?.text)) {
+      Provider.of<TodoController>(context, listen: false).setSavable(true);
+    } else {
+      Provider.of<TodoController>(context, listen: false).setSavable(false);
+    }
+  }
+
   void _addTodo() {
     currentTodo = Todo(title: titleController.text, text: textController.text);
     Provider.of<TodoController>(context, listen: false).add(currentTodo!);
@@ -59,6 +85,7 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
           Flexible(
               child: TextField(
             controller: titleController,
+            onChanged: shouldSave,
             decoration: const InputDecoration(
               border: InputBorder.none,
               hintText: 'Enter the Title',
@@ -71,6 +98,7 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
             maxLines: null,
             minLines: 3,
             controller: textController,
+            onChanged: shouldSave,
             decoration: const InputDecoration(
               border: InputBorder.none,
               hintText: 'Enter the Description',
@@ -100,19 +128,29 @@ class _CreateUpdatePageState extends State<CreateUpdatePage> {
       ),
       floatingActionButton: Consumer<TodoController>(
           builder: (context, todo, child) => ElevatedButton(
-              onPressed: currentTodo != null ? _updateTodo : _addTodo,
+              onPressed: todo.savable
+                  ? (currentTodo != null ? _updateTodo : _addTodo)
+                  : null,
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith((states) =>
-                      Theme.of(context).appBarTheme.iconTheme?.color as Color),
-                  shape: MaterialStateProperty.all<CircleBorder>(
-                      const CircleBorder(
-                          side: BorderSide(
-                              width: 2.0, color: Color(0xff867964))))),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+                      (todo.savable
+                              ? Theme.of(context).appBarTheme.iconTheme?.color
+                              : Theme.of(context).scaffoldBackgroundColor)
+                          as Color),
+                  shape: MaterialStateProperty.all<CircleBorder>(CircleBorder(
+                      side: BorderSide(
+                          width: 2.0,
+                          color: todo.savable
+                              ? const Color(0xff867964)
+                              : const Color(0xffE0C9A6))))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 30.0),
                 child: Icon(
                   Icons.save,
-                  color: Color(0xffF0E4D3),
+                  color: todo.savable
+                      ? const Color(0xffF0E4D3)
+                      : const Color(0xffE0C9A6),
                 ),
               ))), // This trailing comma makes auto-formatting nicer for build methods.
     );

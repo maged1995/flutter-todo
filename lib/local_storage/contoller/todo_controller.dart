@@ -8,8 +8,16 @@ class TodoController extends ChangeNotifier {
   final todoBox = Hive.box<Todo>('todos');
 
   late List<Map> _todos;
+  bool _savable = false;
+
+  get savable => _savable;
 
   UnmodifiableListView get list => UnmodifiableListView(_todos);
+
+  void setSavable(shouldSave, [notify = true]) {
+    _savable = shouldSave;
+    if (notify) notifyListeners();
+  }
 
   TodoController() {
     loadTodos();
@@ -24,8 +32,7 @@ class TodoController extends ChangeNotifier {
   }
 
   void add(Todo todo) {
-    if (_todos.any((e) => e['todo'].title == todo.title)) {
-    } else {
+    if (savable) {
       todoBox.add(todo).then((id) {
         _todos.add({'id': id, 'todo': todo});
         notifyListeners();
@@ -34,7 +41,7 @@ class TodoController extends ChangeNotifier {
   }
 
   void remove(index) async {
-    await todoBox.delete(_todos.removeAt(index));
+    await todoBox.delete(_todos.removeAt(index)['id']);
     notifyListeners();
   }
 
